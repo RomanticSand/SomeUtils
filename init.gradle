@@ -1,0 +1,77 @@
+// allprojects{
+//     repositories {
+//         def ALIYUN_REPOSITORY_URL = 'http://maven.aliyun.com/nexus/content/groups/public'
+//         def ALIYUN_JCENTER_URL = 'http://maven.aliyun.com/nexus/content/repositories/jcenter'
+//         def ALIYUN_GRADLE_URL = 'http://maven.aliyun.com/nexus/content/repositories/gradle-plugin'
+//         // def ALIYUN_GOOGLE_URL ='http://maven.aliyun.com/nexus/content/repositories/google'
+//         all { ArtifactRepository repo ->
+//             if(repo instanceof MavenArtifactRepository){
+//                 def url = repo.url.toString()
+//                 if (url.startsWith('https://repo1.maven.org/maven2')) {
+//                     project.logger.lifecycle "Repository ${repo.url} replaced by $ALIYUN_REPOSITORY_URL."
+//                     remove repo
+//                 }
+//                 if (url.startsWith('https://jcenter.bintray.com/')) {
+//                     project.logger.lifecycle "Repository ${repo.url} replaced by $ALIYUN_JCENTER_URL."
+//                     remove repo
+//                 }
+//                 // if (url.startsWith('https://services.gradle.org/')) {
+//                 //     project.logger.lifecycle "Repository ${repo.url} replaced by $ALIYUN_GRADLE_URL."
+//                 //     remove repo
+//                 // }
+//                 // if (url.startsWith('https://dl.google.com/dl/android/maven2/')) {
+//                 //     project.logger.lifecycle "Repository ${repo.url} replaced by $ALIYUN_GOOGLE_URL."
+//                 //     remove repo
+//                 // }
+//             }
+//         }
+//         maven {
+//             url ALIYUN_REPOSITORY_URL
+//             url ALIYUN_JCENTER_URL
+//             // url ALIYUN_GRADLE_URL
+//             // url ALIYUN_GOOGLE_URL
+//         }
+//     }
+// }
+// repositories { def REPOSITORY_URL = 'http://maven.aliyun.com/nexus/content/groups/public/' 
+//all { ArtifactRepository repo -> if(repo instanceof MavenArtifactRepository){ def url = repo.url.toString() if (url.startsWith('https://repo1.maven.org/maven2') || url.startsWith('https://jcenter.bintray.com/')) { project.logger.lifecycle "Repository ${repo.url} replaced by $REPOSITORY_URL." remove repo } } } maven { url REPOSITORY_URL } } }
+gradle.projectsLoaded {
+    rootProject.allprojects {
+        buildscript {
+            repositories {
+                def REPOSITORY_URL = 'http://maven.aliyun.com/nexus/content/repositories/jcenter'
+                all { ArtifactRepository repo ->
+                    if (repo instanceof MavenArtifactRepository) {
+                        def url = repo.url.toString()
+                        if (url.startsWith('https://repo1.maven.org/maven2')
+                            || url.startsWith('https://jcenter.bintray.com/')) {
+                            project.logger.lifecycle "Repository ${repo.url} replaced by $REPOSITORY_URL."
+                            println("buildscript ${repo.url} replaced by $REPOSITORY_URL.")
+                            remove repo
+                        }
+                    }
+                }
+                jcenter {
+                    url REPOSITORY_URL
+                }
+            }
+        }
+        repositories {
+            def REPOSITORY_URL = 'http://maven.aliyun.com/nexus/content/repositories/jcenter'
+            all { ArtifactRepository repo ->
+                if (repo instanceof MavenArtifactRepository) {
+                    def url = repo.url.toString()
+                    if (url.startsWith('https://repo1.maven.org/maven2')
+                        || url.startsWith('https://jcenter.bintray.com/')) {
+                        project.logger.lifecycle "Repository ${repo.url} replaced by $REPOSITORY_URL."
+                        println("allprojects ${repo.url} replaced by $REPOSITORY_URL.")
+                        remove repo
+                    }
+                }
+            }
+            jcenter {
+                url REPOSITORY_URL
+            }
+        }
+    }
+}
